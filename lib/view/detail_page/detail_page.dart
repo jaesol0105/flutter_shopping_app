@@ -1,7 +1,18 @@
 import 'package:flutter/material.dart';
 
 class DetailPage extends StatelessWidget {
-  const DetailPage({super.key});
+  const DetailPage(
+    this.picture,
+    this.title,
+    this.name,
+    this.money,
+    this.description,
+  );
+  final String picture;
+  final String title;
+  final String name;
+  final int money;
+  final String description;
 
   @override
   Widget build(BuildContext context) {
@@ -20,18 +31,14 @@ class DetailPage extends StatelessWidget {
       body: ListView(
         children: [
           //맨위 이미지
-          Image.asset(
-            "assets/book_1.jpg",
-            width: double.infinity,
-            fit: BoxFit.contain,
-          ),
+          Image.asset(picture, width: double.infinity, fit: BoxFit.contain),
           SizedBox(height: 25),
 
           //책 제목
           Container(
             padding: EdgeInsets.symmetric(horizontal: 30),
             child: Text(
-              "도서명 : 나는 토마토 절대 안먹어",
+              "도서명 : $title",
               textAlign: TextAlign.start,
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
@@ -42,7 +49,7 @@ class DetailPage extends StatelessWidget {
             padding: EdgeInsets.symmetric(horizontal: 30),
 
             child: Text(
-              "저자: 로렌차일드",
+              "저자: $name",
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
             ),
           ),
@@ -53,7 +60,7 @@ class DetailPage extends StatelessWidget {
           Container(
             padding: EdgeInsets.symmetric(horizontal: 30),
             child: Text(
-              "책의 가격 : 원",
+              "책의 가격 :$money 원",
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
             ),
           ),
@@ -63,7 +70,7 @@ class DetailPage extends StatelessWidget {
           Container(
             padding: EdgeInsets.symmetric(horizontal: 30),
             child: Text(
-              "책 소개: 토마토 싫어 토마토 싫어,토마토 싫어 토마토 싫어토마토 싫어 토마토 싫어,토마토 싫어 토마토 싫어,토마토 싫어 토마토 싫어,토마토 싫어 토마토 싫어,토마토 싫어 토마토 싫어,토마토 싫어 토마토 싫어,토마토 싫어 토마토 싫어,",
+              "책 소개: $description",
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
             ),
           ),
@@ -80,7 +87,15 @@ class DetailPage extends StatelessWidget {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (contet) => const DetailPage()),
+                  MaterialPageRoute(
+                    builder: (contet) => const DetailPage(
+                      "assets/book_1.jpg",
+                      "나는 토마토 절대 안먹어",
+                      "로렌차일드",
+                      99999,
+                      "나는토마토 절대 안먹어,나는토마토 절대 안먹어,나는토마토 절대 안먹어,나는토마토 절대 안먹어,나는토마토 절대 안먹어,",
+                    ),
+                  ),
                 );
               },
               //바로구매 컨테이너
@@ -105,19 +120,27 @@ class DetailPage extends StatelessWidget {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const DetailPage()),
+                  MaterialPageRoute(
+                    builder: (context) => const DetailPage(
+                      "assets/book_2.jpg",
+                      "나는 토마토 절대 안먹어",
+                      "로렌차일드",
+                      99999,
+                      "나는토마토 절대 안먹어,나는토마토 절대 안먹어,나는토마토 절대 안먹어,나는토마토 절대 안먹어,나는토마토 절대 안먹어,",
+                    ),
+                  ),
                 );
               },
               // 장바구니 컨테이너
-            child:  Container(
-              width: 52,
-              height: 54,
-              decoration: BoxDecoration(
-                color: Colors.grey,
-                borderRadius: BorderRadius.circular(10),
+              child: Container(
+                width: 52,
+                height: 54,
+                decoration: BoxDecoration(
+                  color: Colors.grey,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Icon(Icons.shopping_cart, color: Colors.white),
               ),
-              child: Icon(Icons.shopping_cart, color: Colors.white),
-            ),
             ),
           ],
         ),
