@@ -1,18 +1,21 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_project_3/view/cart_page/cart_page.dart';
 
 class DetailPage extends StatelessWidget {
   const DetailPage(
-    this.picture,
     this.title,
-    this.name,
-    this.money,
+    this.author,
     this.description,
+    this.image,
+    this.price,
   );
-  final String picture;
   final String title;
-  final String name;
-  final int money;
-  final String description;
+  final String author;
+  final String? description;
+  final String? image;
+  final int price;
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +34,10 @@ class DetailPage extends StatelessWidget {
       body: ListView(
         children: [
           //맨위 이미지
-          Image.asset(picture, width: double.infinity, fit: BoxFit.contain),
+          Container( 
+            height: 350,
+            child: Image.file(File(image??""), fit: BoxFit.cover)),
+
           SizedBox(height: 25),
 
           //책 제목
@@ -49,7 +55,7 @@ class DetailPage extends StatelessWidget {
             padding: EdgeInsets.symmetric(horizontal: 30),
 
             child: Text(
-              "저자: $name",
+              "저자: $author",
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
             ),
           ),
@@ -60,7 +66,7 @@ class DetailPage extends StatelessWidget {
           Container(
             padding: EdgeInsets.symmetric(horizontal: 30),
             child: Text(
-              "책의 가격 :$money 원",
+              "책의 가격 :$price 원",
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
             ),
           ),
@@ -92,8 +98,8 @@ class DetailPage extends StatelessWidget {
                       "assets/book_1.jpg",
                       "나는 토마토 절대 안먹어",
                       "로렌차일드",
-                      99999,
                       "나는토마토 절대 안먹어,나는토마토 절대 안먹어,나는토마토 절대 안먹어,나는토마토 절대 안먹어,나는토마토 절대 안먹어,",
+                      99999,
                     ),
                   ),
                 );
@@ -121,12 +127,8 @@ class DetailPage extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => const DetailPage(
-                      "assets/book_2.jpg",
-                      "나는 토마토 절대 안먹어",
-                      "로렌차일드",
-                      99999,
-                      "나는토마토 절대 안먹어,나는토마토 절대 안먹어,나는토마토 절대 안먹어,나는토마토 절대 안먹어,나는토마토 절대 안먹어,",
+                    builder: (context) => const CartPage(
+                     
                     ),
                   ),
                 );
