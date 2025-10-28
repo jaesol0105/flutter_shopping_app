@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:flutter_project_3/models/book_entity.dart';
 import 'package:flutter_project_3/view/cart_page/cart_page.dart';
+import 'dart:io';
+
+import 'package:intl/intl.dart';
 
 class CartListView extends StatelessWidget {
   final List<CartItem> cartItems;
@@ -57,11 +61,24 @@ class CartListView extends StatelessWidget {
                           borderRadius: BorderRadius.circular(12),
                           color: Colors.grey[300],
                         ),
-                        width: 80,
+                        width: 90,
                         height: 120,
-                        child: Center(
-                          child: Text("No\nImage", textAlign: TextAlign.center),
-                        ),
+                        child:
+                            cartItem.book.images == null ||
+                                cartItem.book.images!.isEmpty
+                            ? Center(
+                                child: Text(
+                                  "No\nImage",
+                                  textAlign: TextAlign.center,
+                                ),
+                              )
+                            : ClipRRect(
+                                borderRadius: BorderRadius.circular(12),
+                                child: Image.file(
+                                  File(cartItem.book.images!.first),
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
                       ),
 
                       SizedBox(width: 12),
@@ -113,8 +130,8 @@ class CartListView extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                '결제 금액 : ${selectedItemsPrice().toStringAsFixed(0)}원',
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                '결제 금액 : ${NumberFormat('#,###').format(selectedItemsPrice())}원',
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
               ),
               // 결제 버튼
               TextButton(
@@ -129,7 +146,10 @@ class CartListView extends StatelessWidget {
                       : Colors.grey[400],
                   foregroundColor: Colors.white,
                 ),
-                child: Text("${selectedItems.length}개 구매하기"),
+                child: Text(
+                  "${selectedItems.length}개 구매하기",
+                  style: TextStyle(fontSize: 15),
+                ),
               ),
             ],
           ),

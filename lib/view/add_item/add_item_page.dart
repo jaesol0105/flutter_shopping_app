@@ -67,7 +67,6 @@ class _AddItemPageState extends State<AddItemPage> {
       },
       child: Scaffold(
         appBar: AppBar(
-          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
           leading: IconButton(
             icon: const Icon(Icons.arrow_back_ios_rounded),
             onPressed: () {
@@ -105,7 +104,7 @@ class _AddItemPageState extends State<AddItemPage> {
             left: 20,
             right: 20,
             top: 10,
-            bottom: 40,
+            bottom: 30,
           ),
           child: ElevatedButton(
             onPressed: () async {
@@ -115,7 +114,7 @@ class _AddItemPageState extends State<AddItemPage> {
             },
             style: ElevatedButton.styleFrom(
               minimumSize: Size(double.infinity, 54),
-              backgroundColor: Colors.black,
+              backgroundColor: Colors.blue,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10),
               ),

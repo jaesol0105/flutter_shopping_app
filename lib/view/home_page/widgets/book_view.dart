@@ -22,10 +22,7 @@ class BookView extends StatelessWidget {
       elevation: 2,
       child: Ink(
         padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(12),
-        ),
+        decoration: BoxDecoration(borderRadius: BorderRadius.circular(12)),
         child: InkWell(
           onTap: onNavigateToDetail,
           borderRadius: BorderRadius.circular(12),
