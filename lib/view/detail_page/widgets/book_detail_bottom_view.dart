@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_project_3/models/book_entity.dart';
+import 'package:intl/intl.dart';
 
 class BookDetailBottomView extends StatefulWidget {
   /// [상품 구매 하단바 위젯]
@@ -22,106 +23,115 @@ class _BookDetailBottomViewState extends State<BookDetailBottomView> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 20),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          // 개수 카운터
-          DetailCounter(
-            price: widget.book.price,
-            count: count,
-            onChanged: (changedCount) {
-              setState(() {
-                count = changedCount;
-              });
-            },
-          ),
-
-          // 구매 버튼
-          GestureDetector(
-            onTap: () => purchaseBook(context),
-            child: Container(
-              padding: EdgeInsets.symmetric(vertical: 15),
-              width: 60,
-              height: 54,
-              decoration: BoxDecoration(
-                color: Colors.black,
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: Text(
-                "구매",
-                textAlign: TextAlign.center,
-                style: TextStyle(color: Colors.white, fontSize: 16),
+    return BottomAppBar(
+      color: Colors.white10,
+      child: Expanded(
+        child: Row(
+          children: [
+            // 개수 카운터
+            DetailCounter(
+              price: widget.book.price,
+              count: count,
+              onChanged: (changedCount) {
+                setState(() {
+                  count = changedCount;
+                });
+              },
+            ),
+            Spacer(),
+            // 구매 버튼
+            GestureDetector(
+              onTap: () => purchaseBook(context),
+              child: Container(
+                width: 50,
+                height: 50,
+                decoration: BoxDecoration(
+                  color: Colors.lightBlue,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Center(
+                  child: Text(
+                    "구매",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
               ),
             ),
-          ),
 
-          // 장바구니 버튼
-          GestureDetector(
-            onTap: () {
-              widget.addBookToCartList(widget.book, count);
-              widget.navigateToCart();
-            },
-            child: Container(
-              width: 52,
-              height: 54,
-              decoration: BoxDecoration(
-                color: Colors.grey,
-                borderRadius: BorderRadius.circular(10),
+            SizedBox(width: 12),
+
+            // 장바구니 버튼
+            GestureDetector(
+              onTap: () {
+                widget.addBookToCartList(widget.book, count);
+                widget.navigateToCart();
+              },
+              child: Container(
+                width: 50,
+                height: 50,
+                decoration: BoxDecoration(
+                  color: Colors.grey,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Icon(Icons.shopping_cart, color: Colors.white),
               ),
-              child: Icon(Icons.shopping_cart, color: Colors.white),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
 
   /// [상품 구매 대화상자 출력 및 완료 처리]
   void purchaseBook(BuildContext context) {
+    _showPurchaseConfirmDialog(context);
+  }
+
+  /// [구매 확인 다이얼로그]
+  void _showPurchaseConfirmDialog(BuildContext context) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          content: SingleChildScrollView(
-            child: ListBody(
-              children: [Text("${widget.book.title}을 $count개 구매하시겠습니까?")],
+          title: Center(child: Text('구매 확인')),
+          content: Text("${widget.book.title}을 $count개 구매하시겠습니까?"),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text("취소"),
             ),
-          ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                _showPurchaseCompleteDialog(context);
+              },
+              child: Text("확인", style: TextStyle(color: Colors.blue)),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  /// [구매 완료 다이얼로그]
+  void _showPurchaseCompleteDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Center(child: Text('구매 완료')),
+          content: Text("구매가 완료되었습니다!"),
           actions: [
             TextButton(
               onPressed: () {
-                showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return AlertDialog(
-                      content: SingleChildScrollView(
-                        child: ListBody(children: [Text("구매 완료!")]),
-                      ),
-                      actions: [
-                        TextButton(
-                          onPressed: () {
-                            // 홈 화면으로 이동
-                            Navigator.popUntil(
-                              context,
-                              (route) => route.isFirst,
-                            );
-                          },
-                          child: Text("확인"),
-                        ),
-                      ],
-                    );
-                  },
-                );
+                // 홈 화면으로 이동
+                Navigator.popUntil(context, (route) => route.isFirst);
               },
               child: Text("확인"),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop(false);
-              },
-              child: Text("취소"),
             ),
           ],
         );
@@ -148,7 +158,6 @@ class DetailCounter extends StatelessWidget {
     int total = price * count;
     return Row(
       children: [
-        // 수량 빼기 (-)
         IconButton(
           onPressed: () => {
             if (count > 1) {onChanged(count - 1)},
@@ -158,13 +167,10 @@ class DetailCounter extends StatelessWidget {
 
         // 현재 수량
         Container(
-          alignment: Alignment.center,
-          width: 30,
-          height: 36,
-          child: Text(
-            "$count",
-            style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
-          ),
+          width: 40,
+          height: 30,
+          decoration: BoxDecoration(border: Border.all(color: Colors.grey)),
+          child: Center(child: Text("$count", style: TextStyle(fontSize: 15))),
         ),
 
         // 수량 더하기 (+)
@@ -174,10 +180,20 @@ class DetailCounter extends StatelessWidget {
         ),
 
         // 총 가격
-        SizedBox(
-          width: 90,
-          height: 46,
-          child: Text("총 가격: $total 원", style: TextStyle(fontSize: 18)),
+        Container(
+          width: 130,
+          height: 50,
+          padding: EdgeInsets.symmetric(horizontal: 10),
+          decoration: BoxDecoration(
+            border: Border.all(color: Colors.grey),
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Center(
+            child: Text(
+              "${NumberFormat('#,###').format(total)} 원",
+              style: TextStyle(fontSize: 15),
+            ),
+          ),
         ),
       ],
     );

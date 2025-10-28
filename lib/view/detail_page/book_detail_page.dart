@@ -24,15 +24,7 @@ class _BookDetailPageState extends State<BookDetailPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        title: Text(
-          "상세 페이지",
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-        ),
-        elevation: 4,
-        shadowColor: Colors.grey.withValues(alpha: 1),
-      ),
+      appBar: AppBar(title: Text("상세 페이지")),
 
       // 상품의 상세 내용
       body: BookDetailView(book: widget.book),

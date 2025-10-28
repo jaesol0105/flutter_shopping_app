@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_project_3/view/add_item/widgets/photo_picker_row_view.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 
 class AddItemView extends StatelessWidget {
   /// [상품 정보 입력 위젯]
@@ -101,7 +102,7 @@ class AddItemView extends StatelessWidget {
                 children: [
                   Spacer(),
                   Text(
-                    "원",
+                    "${NumberFormat('#,###').format(int.tryParse(priceController.text.replaceAll(',', '')) ?? 0)} 원",
                     style: TextStyle(
                       color: Colors.grey,
                       fontWeight: FontWeight.bold,
