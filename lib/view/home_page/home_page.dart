@@ -23,17 +23,26 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('REBook'),
+        backgroundColor: Colors.blue,
+        title: Text(
+          'REBook',
+          style: TextStyle(
+            fontSize: 25,
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
         centerTitle: true,
         actions: [
-          IconButton(icon: Icon(Icons.search), onPressed: () {}),
           IconButton(
-            icon: Icon(Icons.shopping_cart),
+            icon: Icon(Icons.search, color: Colors.white),
+            onPressed: () {},
+          ),
+          IconButton(
+            icon: Icon(Icons.shopping_cart, color: Colors.white),
             onPressed: () => navigateToCart(),
           ),
         ],
-        backgroundColor: Colors.white,
-        foregroundColor: Colors.black,
       ),
 
       // 상품 목록
@@ -49,8 +58,8 @@ class _HomePageState extends State<HomePage> {
       floatingActionButton: FloatingActionButton(
         onPressed: () => navigateToAddItem(),
         shape: const CircleBorder(),
-        backgroundColor: const Color.fromARGB(255, 152, 155, 156),
-        child: const Icon(Icons.add, size: 24),
+        backgroundColor: Colors.blue,
+        child: const Icon(Icons.add, size: 35, color: Colors.white),
       ),
     );
   }

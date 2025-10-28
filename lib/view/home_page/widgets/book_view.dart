@@ -1,5 +1,5 @@
 import 'dart:io';
-
+import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_project_3/models/book_entity.dart';
 
@@ -18,44 +18,59 @@ class BookView extends StatelessWidget {
   Widget build(BuildContext context) {
     final images = book.images ?? [];
 
-    return Ink(
-      decoration: BoxDecoration(
-        color: Colors.grey[200],
-        borderRadius: BorderRadius.circular(14),
-      ),
-      child: InkWell(
-        onTap: onNavigateToDetail,
-        borderRadius: BorderRadius.circular(14),
-        child: Padding(
-          padding: const EdgeInsets.all(24),
+    return Card(
+      elevation: 2,
+      child: Ink(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: InkWell(
+          onTap: onNavigateToDetail,
+          borderRadius: BorderRadius.circular(12),
           child: Container(
-            color: Colors.transparent,
             child: Row(
               children: [
                 Container(
-                  width: 100,
-                  height: 100,
+                  width: 90,
+                  height: 120,
                   decoration: BoxDecoration(
-                    color: Colors.grey[400],
-                    borderRadius: BorderRadius.circular(20),
+                    color: Colors.grey[300],
+                    borderRadius: BorderRadius.circular(12),
                   ),
                   child: images.isEmpty
-                      ? const Center(
-                          child: Text('image', style: TextStyle(fontSize: 16)),
+                      ? Center(
+                          child: Text(
+                            'No\nImage',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(fontSize: 16),
+                          ),
                         )
                       : Image.file(File(images.first), fit: BoxFit.cover),
                 ),
-                SizedBox(width: 32),
+                SizedBox(width: 12),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(book.title, style: TextStyle(fontSize: 28)),
                     Text(
-                      book.price.toString(),
+                      "도서명 : ${book.title}",
                       style: TextStyle(
+                        fontSize: 17,
                         fontWeight: FontWeight.bold,
-                        fontSize: 20,
                       ),
+                    ),
+                    Text("저자 : ${book.author}", style: TextStyle(fontSize: 14)),
+                    Text(
+                      "소개 : ${book.description}",
+                      style: TextStyle(fontSize: 14),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    SizedBox(height: 12),
+                    Text(
+                      "가격 : ${NumberFormat('#,###').format(book.price)} 원",
+                      style: TextStyle(fontSize: 14),
                     ),
                   ],
                 ),

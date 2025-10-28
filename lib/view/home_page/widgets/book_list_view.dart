@@ -16,7 +16,7 @@ class BookListView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListView.separated(
-      padding: EdgeInsets.only(left: 16, right: 16, top: 12, bottom: 24),
+      padding: EdgeInsets.all(16),
       separatorBuilder: (BuildContext context, int index) =>
           SizedBox(height: 16),
       itemCount: bookList.length,
