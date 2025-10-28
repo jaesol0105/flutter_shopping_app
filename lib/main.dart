@@ -13,7 +13,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
     
-      
+      // home: DetailCounter(),
       home: DetailPage("나는 토마토 절대 안먹어", "이장수", "이재솔 love 이장수", "", 99999),
     );
   }

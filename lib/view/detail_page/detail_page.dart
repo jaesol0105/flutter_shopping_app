@@ -16,6 +16,7 @@ class DetailPage extends StatelessWidget {
   final String? description;
   final String? image;
   final int price;
+  final int count = 3;
 
   @override
   Widget build(BuildContext context) {
@@ -34,9 +35,12 @@ class DetailPage extends StatelessWidget {
       body: ListView(
         children: [
           //맨위 이미지
-          Container( 
+          SizedBox(
             height: 350,
-            child: Image.file(File(image??""), fit: BoxFit.cover)),
+            child: image == null || image == ""
+                ? Container(color: Colors.grey)
+                : Image.file(File(image ?? ""), fit: BoxFit.cover),
+          ),
 
           SizedBox(height: 25),
 
@@ -88,33 +92,78 @@ class DetailPage extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            //바로구매 버튼
+            DetailCounter(),
+            //구매 버튼
             GestureDetector(
               onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (contet) => const DetailPage(
-                      "assets/book_1.jpg",
-                      "나는 토마토 절대 안먹어",
-                      "로렌차일드",
-                      "나는토마토 절대 안먹어,나는토마토 절대 안먹어,나는토마토 절대 안먹어,나는토마토 절대 안먹어,나는토마토 절대 안먹어,",
-                      99999,
-                    ),
-                  ),
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      content: SingleChildScrollView(
+                        child: ListBody(
+                          children: [Text("$title을 $count개 구매하시겠습니까?")],
+                        ),
+                      ),
+                      actions: [
+                        TextButton(
+                          onPressed: () {
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  content: SingleChildScrollView(
+                                    child: ListBody(children: [Text("구매완료!")]),
+                                  ),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.popUntil(context, (route) => route.isFirst);
+                                      },
+                                      child: Text("확인"),
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+                          },
+                          child: Text("확인"),
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            Navigator.of(context).pop(false);
+                          },
+                          child: Text("취소"),
+                        ),
+                      ],
+                    );
+                  },
                 );
+                // Navigator.push(
+                //   context,
+                //   MaterialPageRoute(
+                //     builder: (contet) => const DetailPage(
+                //       "assets/book_1.jpg",
+                //       "나는 토마토 절대 안먹어",
+                //       "로렌차일드",
+                //       "나는토마토 절대 안먹어,나는토마토 절대 안먹어,나는토마토 절대 안먹어,나는토마토 절대 안먹어,나는토마토 절대 안먹어,",
+                //       99999,
+                //     ),
+                //   ),
+                // );
               },
-              //바로구매 컨테이너
+
+              //구매 컨테이너
               child: Container(
                 padding: EdgeInsets.symmetric(vertical: 15),
-                width: 260,
+                width: 60,
                 height: 54,
                 decoration: BoxDecoration(
                   color: Colors.black,
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: Text(
-                  "바로구매",
+                  "구매",
                   textAlign: TextAlign.center,
                   style: TextStyle(color: Colors.white, fontSize: 16),
                 ),
@@ -126,11 +175,7 @@ class DetailPage extends StatelessWidget {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(
-                    builder: (context) => const CartPage(
-                     
-                    ),
-                  ),
+                  MaterialPageRoute(builder: (context) => const CartPage()),
                 );
               },
               // 장바구니 컨테이너
@@ -159,6 +204,63 @@ class DetailPage extends StatelessWidget {
         thickness: 1, // 선 두께
         color: Colors.grey, // 선 색상
       ),
+    );
+  }
+}
+
+class DetailCounter extends StatefulWidget {
+  // const DetailCounter(Key? key):super (key: key);
+  @override
+  DetailCounterState createState() => DetailCounterState();
+}
+
+class DetailCounterState extends State<DetailCounter> {
+  int counter = 1;
+  int total = 9999;
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        //- 함수
+        IconButton(
+          onPressed: () => {
+            setState(() {
+              if (counter > 1) {
+                counter--;
+                total = 9999 * counter;
+              }
+            }),
+          },
+          icon: const Icon(Icons.remove),
+        ),
+        // buildButton(Icons.remove),
+        //카운팅
+        Container(
+          alignment: Alignment.center,
+          width: 30,
+          height: 36,
+          child: Text(
+            "$counter",
+            style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+          ),
+        ),
+        //+ 함수
+        IconButton(
+          onPressed: () => {
+            setState(() {
+              counter++;
+              total = 9999 * counter;
+            }),
+          },
+          icon: const Icon(Icons.add),
+        ),
+        //총가격
+        SizedBox(
+          width: 90,
+          height: 46,
+          child: Text("총 가격: $total 원", style: TextStyle(fontSize: 18)),
+        ),
+      ],
     );
   }
 }
