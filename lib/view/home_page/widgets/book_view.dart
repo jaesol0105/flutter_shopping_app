@@ -16,6 +16,8 @@ class BookView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final images = book.images ?? [];
+
     return Card(
       elevation: 2,
       child: Ink(
@@ -37,7 +39,7 @@ class BookView extends StatelessWidget {
                     color: Colors.grey[300],
                     borderRadius: BorderRadius.circular(12),
                   ),
-                  child: book.image == null || book.image == ""
+                  child: images.isEmpty
                       ? Center(
                           child: Text(
                             'No\nImage',
@@ -45,7 +47,7 @@ class BookView extends StatelessWidget {
                             style: TextStyle(fontSize: 16),
                           ),
                         )
-                      : Image.file(File(book.image ?? ""), fit: BoxFit.cover),
+                      : Image.file(File(images.first), fit: BoxFit.cover),
                 ),
                 SizedBox(width: 12),
                 Column(

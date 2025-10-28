@@ -2,22 +2,24 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
-class PhotoPickerRowView extends StatefulWidget {
-  const PhotoPickerRowView({super.key, required this.addImageToLocal});
+class PhotoPickerRowView extends StatelessWidget {
+  const PhotoPickerRowView({
+    super.key,
+    required this.images,
+    required this.addImageToLocal,
+    required this.removeImageAt,
+    this.maxCount = 10,
+  });
 
+  final List<XFile> images;
   final void Function(Iterable<XFile>) addImageToLocal;
-
-  @override
-  State<PhotoPickerRowView> createState() => _PhotoPickerRowViewState();
-}
-
-class _PhotoPickerRowViewState extends State<PhotoPickerRowView> {
-  int maxCount = 10;
-  final List<XFile> _images = [];
+  final void Function(int) removeImageAt;
+  final int maxCount;
 
   /// [업로드할 이미지 선택]
-  Future<void> _pickPhoto() async {
-    final remain = maxCount - _images.length;
+  Future<void> pickPhoto() async {
+    final remain = maxCount - images.length;
+    if (remain <= 0) return;
 
     // 사진 선택 (최대 10개 제한)
     final picked = await ImagePicker().pickMultiImage(
@@ -32,15 +34,13 @@ class _PhotoPickerRowViewState extends State<PhotoPickerRowView> {
       (remain 동작안할 경우를 대비해서 수동으로 예외처리) */
     final addList = picked.take(remain);
 
-    setState(() {
-      _images.addAll(addList);
-    });
+    addImageToLocal(addList);
   }
 
   @override
   Widget build(BuildContext context) {
-    final ableToAdd = _images.length < maxCount;
-    final itemCount = _images.length + 1;
+    final ableToAdd = images.length < maxCount;
+    final itemCount = images.length + 1;
 
     return SizedBox(
       height: 60,
@@ -50,12 +50,12 @@ class _PhotoPickerRowViewState extends State<PhotoPickerRowView> {
         separatorBuilder: (BuildContext context, int index) =>
             const SizedBox(width: 8),
         itemBuilder: (context, index) {
-          // 첫번째 인덱스
+          // 첫번째 인덱스 (이미지 불러오기)
           if (index == 0) {
-            return _AddPhoto(onTap: _pickPhoto, ableToAdd: ableToAdd);
+            return _AddPhoto(onTap: pickPhoto, ableToAdd: ableToAdd);
           }
 
-          final img = _images[index - 1];
+          final img = images[index - 1];
 
           // 나머지 인덱스
           return ClipRRect(
@@ -73,9 +73,7 @@ class _PhotoPickerRowViewState extends State<PhotoPickerRowView> {
                   top: 4,
                   right: 4,
                   child: InkWell(
-                    onTap: () {
-                      setState(() => _images.removeAt(index - 1));
-                    },
+                    onTap: () => removeImageAt(index - 1),
                     child: Container(
                       decoration: BoxDecoration(
                         color: Colors.black54,

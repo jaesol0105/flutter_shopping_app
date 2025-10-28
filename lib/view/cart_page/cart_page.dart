@@ -4,8 +4,13 @@ import 'package:flutter_project_3/view/cart_page/cart_list_view.dart';
 import 'package:flutter_project_3/view/cart_page/empty_cart.dart';
 
 class CartPage extends StatefulWidget {
-  CartPage({super.key, required this.cartItemList});
+  CartPage({
+    super.key,
+    required this.cartItemList,
+    required this.removeBookToCartList,
+  });
   List<CartItem> cartItemList;
+  final void Function(int) removeBookToCartList;
 
   @override
   State<CartPage> createState() => _CartPageState();
@@ -25,7 +30,7 @@ class _CartPageState extends State<CartPage> {
   // 아이템 제거
   void removeItem(int index) {
     setState(() {
-      cart.removeAt(index);
+      widget.removeBookToCartList(index);
       selected.remove(index);
     });
   }

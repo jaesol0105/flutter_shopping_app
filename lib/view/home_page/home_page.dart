@@ -93,12 +93,24 @@ class _HomePageState extends State<HomePage> {
   Future<void> navigateToCart() async {
     final result = await Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => CartPage(cartItemList: cartList)),
+      MaterialPageRoute(
+        builder: (context) => CartPage(
+          cartItemList: cartList,
+          removeBookToCartList: removeBookToCartList,
+        ),
+      ),
     );
   }
 
   // [장바구니에 상품 추가]
   void addBookToCartList(BookEntity book, int count) {
     cartList.add(CartItem(book: book, count: count));
+  }
+
+  // [장바구니에서 상품 제거]
+  void removeBookToCartList(int index) {
+    setState(() {
+      cartList.removeAt(index);
+    });
   }
 }

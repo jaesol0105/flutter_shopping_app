@@ -2,14 +2,14 @@ class BookEntity {
   final String title;
   final String? description;
   final String author;
-  final String? image;
+  final List<String>? images;
   final int price;
 
   BookEntity({
     required this.title,
     this.description,
     required this.author,
-    this.image,
+    this.images,
     required this.price,
   });
 }
