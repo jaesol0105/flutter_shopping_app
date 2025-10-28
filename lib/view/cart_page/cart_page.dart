@@ -8,22 +8,22 @@ class CartPage extends StatefulWidget {
     super.key,
     required this.cartItemList,
     required this.removeBookToCartList,
+    required this.editBookCountInCart,
   });
   List<CartItem> cartItemList;
   final void Function(int) removeBookToCartList;
+  final void Function(int, int) editBookCountInCart;
 
   @override
   State<CartPage> createState() => _CartPageState();
 }
 
 class _CartPageState extends State<CartPage> {
-  late List<CartItem> cart;
   late Set<int> selected; // 체크 상태
 
   @override
   void initState() {
     super.initState();
-    cart = List<CartItem>.from(widget.cartItemList);
     selected = {};
   }
 
@@ -31,7 +31,13 @@ class _CartPageState extends State<CartPage> {
   void removeItem(int index) {
     setState(() {
       widget.removeBookToCartList(index);
-      selected.remove(index);
+      /** 엔티티에 id 만들 기력이 없어서 추가한 코드
+         selectedItemsPrice()에서 사라진 인덱스를 읽는걸 방지 */
+      selected = selected
+          .where((i) => i != index)
+          .map((i) => i > index ? i - 1 : i)
+          .where((i) => i >= 0 && i < widget.cartItemList.length)
+          .toSet();
     });
   }
 
@@ -40,7 +46,7 @@ class _CartPageState extends State<CartPage> {
     // 책 수량 1 보다 작아지지 않음
     final int minCount = newCount < 1 ? 1 : newCount;
     setState(() {
-      cart[index] = cart[index].copyWith(count: minCount);
+      widget.editBookCountInCart(index, minCount);
     });
   }
 
@@ -62,7 +68,7 @@ class _CartPageState extends State<CartPage> {
       body: widget.cartItemList.isEmpty
           ? EmptyCart()
           : CartListView(
-              cartItems: cart,
+              cartItems: widget.cartItemList,
               selectedItems: selected,
               onRemove: removeItem,
               onUpdateCount: updateCount,
