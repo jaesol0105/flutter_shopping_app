@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_project_3/view/detail_page/detail_page.dart';
+import 'package:flutter_project_3/view/detail_page/book_detail_page.dart';
 import 'package:flutter_project_3/view/home_page/home_page.dart';
 
 void main() {
@@ -9,15 +9,8 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(home: HomePage(),
-    
-
-      
-      //home: DetailPage("나는 토마토 절대 안먹어", "이장수", "이재솔 love 이장수", "", 99999),
-    );
+    return MaterialApp(home: HomePage(), debugShowCheckedModeBanner: false);
   }
 }
-

@@ -1,78 +1,95 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_project_3/models/book_entity.dart';
+import 'package:flutter_project_3/view/add_item/add_item_page.dart';
+import 'package:flutter_project_3/view/cart_page/cart_page.dart';
+import 'package:flutter_project_3/view/detail_page/book_detail_page.dart';
+import 'package:flutter_project_3/view/home_page/widgets/book_list_view.dart';
+import 'package:flutter_project_3/view/home_page/widgets/empty_view.dart';
 
+class HomePage extends StatefulWidget {
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
 
-class HomePage extends StatelessWidget {
-  final List<Map<String, String>> books = [
-    {'title': '도서명1', 'price': '25,000원'},
-    {'title': '도서명2', 'price': '16,000원'},
-    {'title': '도서명3', 'price': '9,000원'},
-    {'title': '도서명4', 'price': '30,000원'},
-    {'title': '도서명5', 'price': '12,000원'},
-  ];
+class _HomePageState extends State<HomePage> {
+  List<BookEntity> bookList = [
+    BookEntity(title: '도서명1', author: '재솔', price: 25000),
+    BookEntity(title: '도서명2', author: '재솔', price: 16000),
+  ]; // 상품(도서) 데이터
+
+  List<CartItem> cartList = []; // 장바구니 데이터
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(icon: Icon(Icons.arrow_back), onPressed: () {}),
         title: Text('REBook'),
         centerTitle: true,
         actions: [
           IconButton(icon: Icon(Icons.search), onPressed: () {}),
-          IconButton(icon: Icon(Icons.shopping_cart), onPressed: () {}),
+          IconButton(
+            icon: Icon(Icons.shopping_cart),
+            onPressed: () => navigateToCart(),
+          ),
         ],
         backgroundColor: Colors.white,
         foregroundColor: Colors.black,
       ),
-      body: ListView.builder(
-        itemCount: books.length,
-        itemBuilder: (context, index) {
-          final book = books[index];
-          return Material(
-            color: Colors.transparent, 
-            child: InkWell(
-              borderRadius: BorderRadius.circular(14),
-              onTap: () { },
-              child: Container(
-                margin: EdgeInsets.all(16),
-                padding: EdgeInsets.all(24),
-                decoration: BoxDecoration(
-                  color: Colors.grey[200],
-                  borderRadius: BorderRadius.circular(14),
-                ),
-                child: Row(
-                  children: [
-                    Container(
-                      width: 100,
-                      height: 100,
-                      decoration: BoxDecoration(
-                        color: Colors.grey[400],
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: Center(
-                        child: Text('image', style: TextStyle(fontSize: 16)),
-                      ),
-                    ),
-                    SizedBox(width: 32),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(book['title']!, style: TextStyle(fontSize: 28)),
-                        Text(book['price']!, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
+
+      // 상품 목록
+      body: bookList.isEmpty
+          ? EmptyView()
+          : BookListView(
+              key: UniqueKey(),
+              bookList: bookList,
+              onNavigateToDetail: navigateToDetail,
             ),
-          );
-        },
-      ),
+
+      // 상품 추가
       floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.add),
-        onPressed: () {},
+        onPressed: () => navigateToAddItem(),
+        shape: const CircleBorder(),
         backgroundColor: const Color.fromARGB(255, 152, 155, 156),
+        child: const Icon(Icons.add, size: 24),
       ),
     );
+  }
+
+  /// [상품 상세 페이지로 이동]
+  Future<void> navigateToDetail(int index) async {
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => BookDetailPage(
+          key: UniqueKey(),
+          book: bookList[index],
+          index: index,
+          addBookToCartList: addBookToCartList,
+          navigateToCart: navigateToCart,
+        ),
+      ),
+    );
+  }
+
+  /// [상품 추가 페이지로 이동]
+  Future<void> navigateToAddItem() async {
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => AddItemPage()),
+    );
+    setState(() => bookList.add(result));
+  }
+
+  /// [장바구니 페이지로 이동]
+  Future<void> navigateToCart() async {
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => CartPage(cartItemList: cartList)),
+    );
+  }
+
+  // [장바구니에 상품 추가]
+  void addBookToCartList(BookEntity book, int count) {
+    cartList.add(CartItem(book: book, count: count));
   }
 }

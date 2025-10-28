@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_project_3/models/book_entity.dart';
 import 'package:flutter_project_3/view/cart_page/cart_page.dart';
 
 class CartListView extends StatelessWidget {
-  final List<BookEntity> cartItems;
+  final List<CartItem> cartItems;
+  final Set<int> selectedItems;
   final Function(int) onRemove;
   final Function(int, int) onUpdateCount;
   final Function(int, bool) onItemCheck;
@@ -10,15 +12,20 @@ class CartListView extends StatelessWidget {
   const CartListView({
     super.key,
     required this.cartItems,
+    required this.selectedItems,
     required this.onRemove,
     required this.onUpdateCount,
     required this.onItemCheck,
   });
 
+  // 선택한 아이템 가격
   int selectedItemsPrice() {
-    return cartItems
-        .where((item) => item.isChecked)
-        .fold(0, (total, item) => total + (item.price * item.count));
+    int total = 0;
+    for (final index in selectedItems) {
+      final item = cartItems[index];
+      total += item.book.price * item.count;
+    }
+    return total;
   }
 
   @override
@@ -40,32 +47,23 @@ class CartListView extends StatelessWidget {
                     children: [
                       // 체크 버튼
                       CheckButton(
-                        isChecked: cartItem.isChecked,
+                        isChecked: selectedItems.contains(index),
                         onTap: (bool? value) =>
                             onItemCheck(index, value ?? false),
                       ),
                       // 책 이미지
-                      cartItem.image != null && cartItem.image!.isEmpty
-                          ? Container(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(12),
-                                color: Colors.grey[300],
-                              ),
-                              width: 80,
-                              height: 120,
-                              child: Center(
-                                child: Text(
-                                  "No\nImage",
-                                  textAlign: TextAlign.center,
-                                ),
-                              ),
-                            )
-                          : Image.network(
-                              cartItem.image!,
-                              width: 80,
-                              height: 120,
-                              fit: BoxFit.cover,
-                            ),
+                      Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(12),
+                          color: Colors.grey[300],
+                        ),
+                        width: 80,
+                        height: 120,
+                        child: Center(
+                          child: Text("No\nImage", textAlign: TextAlign.center),
+                        ),
+                      ),
+
                       SizedBox(width: 12),
                       Expanded(
                         child: Column(
@@ -74,15 +72,17 @@ class CartListView extends StatelessWidget {
                             SizedBox(height: 8),
                             // 책 이름
                             Text(
-                              "도서명 : ${cartItem.title}",
+                              "도서명 : ${cartItem.book.title}",
                               style: TextStyle(fontWeight: FontWeight.bold),
                               maxLines: 1,
                             ),
                             // 책 저자
-                            Text("저자 : ${cartItem.author}"),
+                            Text("저자 : ${cartItem.book.author}"),
                             SizedBox(height: 12),
                             // 책 가격
-                            Text('가격 : ${cartItem.price.toStringAsFixed(0)}원'),
+                            Text(
+                              '가격 : ${cartItem.book.price.toStringAsFixed(0)}원',
+                            ),
                             // 책 수량 버튼
                             CountButton(
                               index: index,
@@ -101,6 +101,7 @@ class CartListView extends StatelessWidget {
             },
           ),
         ),
+
         Container(
           margin: EdgeInsets.only(bottom: 16),
           padding: EdgeInsets.all(16),
@@ -117,20 +118,18 @@ class CartListView extends StatelessWidget {
               ),
               // 결제 버튼
               TextButton(
-                onPressed: cartItems.any((item) => item.isChecked)
+                onPressed: selectedItems.isNotEmpty
                     ? () {
                         // 기능 미구현
                       }
                     : null,
                 style: TextButton.styleFrom(
-                  backgroundColor: cartItems.any((item) => item.isChecked)
+                  backgroundColor: selectedItems.isNotEmpty
                       ? Colors.grey[600]
                       : Colors.grey[400],
                   foregroundColor: Colors.white,
                 ),
-                child: Text(
-                  "${cartItems.where((item) => item.isChecked).length}개 구매하기",
-                ),
+                child: Text("${selectedItems.length}개 구매하기"),
               ),
             ],
           ),
@@ -192,7 +191,7 @@ class CountButton extends StatelessWidget {
 
   final int index;
   final Function(int index, int newCount) onUpdateCount;
-  final BookEntity cartItem;
+  final CartItem cartItem;
 
   @override
   Widget build(BuildContext context) {

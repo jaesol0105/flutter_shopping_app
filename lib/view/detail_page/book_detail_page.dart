@@ -1,0 +1,48 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_project_3/models/book_entity.dart';
+import 'package:flutter_project_3/view/detail_page/widgets/book_detail_bottom_view.dart';
+import 'package:flutter_project_3/view/detail_page/widgets/book_detail_view.dart';
+
+class BookDetailPage extends StatefulWidget {
+  const BookDetailPage({
+    super.key,
+    required this.book,
+    required this.index,
+    required this.addBookToCartList,
+    required this.navigateToCart,
+  });
+  final BookEntity book;
+  final int index;
+  final void Function(BookEntity, int) addBookToCartList;
+  final VoidCallback navigateToCart;
+
+  @override
+  State<BookDetailPage> createState() => _BookDetailPageState();
+}
+
+class _BookDetailPageState extends State<BookDetailPage> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        title: Text(
+          "상세 페이지",
+          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+        ),
+        elevation: 4,
+        shadowColor: Colors.grey.withValues(alpha: 1),
+      ),
+
+      // 상품의 상세 내용
+      body: BookDetailView(book: widget.book),
+
+      // 하단 버튼
+      bottomNavigationBar: BookDetailBottomView(
+        book: widget.book,
+        addBookToCartList: widget.addBookToCartList,
+        navigateToCart: widget.navigateToCart,
+      ),
+    );
+  }
+}
