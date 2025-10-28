@@ -97,6 +97,7 @@ class _HomePageState extends State<HomePage> {
         builder: (context) => CartPage(
           cartItemList: cartList,
           removeBookToCartList: removeBookToCartList,
+          editBookCountInCart: editBookCountInCart,
         ),
       ),
     );
@@ -118,6 +119,13 @@ class _HomePageState extends State<HomePage> {
   void removeBookToCartList(int index) {
     setState(() {
       cartList.removeAt(index);
+    });
+  }
+
+  // [장바구니에 담긴 상품 수량 변경]
+  void editBookCountInCart(int index, int count) {
+    setState(() {
+      cartList[index].count = count;
     });
   }
 }
