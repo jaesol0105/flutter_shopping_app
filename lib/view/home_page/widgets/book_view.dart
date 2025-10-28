@@ -47,7 +47,13 @@ class BookView extends StatelessWidget {
                             style: TextStyle(fontSize: 16),
                           ),
                         )
-                      : Image.file(File(images.first), fit: BoxFit.cover),
+                      : ClipRRect(
+                          borderRadius: BorderRadius.circular(12),
+                          child: Image.file(
+                            File(images.first),
+                            fit: BoxFit.cover,
+                          ),
+                        ),
                 ),
                 SizedBox(width: 12),
                 Column(

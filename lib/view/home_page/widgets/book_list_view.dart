@@ -18,7 +18,7 @@ class BookListView extends StatelessWidget {
     return ListView.separated(
       padding: EdgeInsets.all(16),
       separatorBuilder: (BuildContext context, int index) =>
-          SizedBox(height: 16),
+          SizedBox(height: 8),
       itemCount: bookList.length,
       itemBuilder: (context, index) {
         BookEntity item = bookList[index];

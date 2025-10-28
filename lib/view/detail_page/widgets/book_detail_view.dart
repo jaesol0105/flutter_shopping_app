@@ -97,7 +97,7 @@ class _BookDetailViewState extends State<BookDetailView> {
         Container(
           padding: EdgeInsets.symmetric(horizontal: 30),
           child: Text(
-            "도서명 : ${widget.book.title}",
+            "${widget.book.title}",
             textAlign: TextAlign.start,
             style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
           ),
@@ -118,7 +118,7 @@ class _BookDetailViewState extends State<BookDetailView> {
         Container(
           padding: EdgeInsets.symmetric(horizontal: 30),
           child: Text(
-            "책의 가격 : ${fmtPrice(widget.book.price)} 원",
+            "가격 : ${fmtPrice(widget.book.price)} 원",
             style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
           ),
         ),
@@ -130,20 +130,20 @@ class _BookDetailViewState extends State<BookDetailView> {
           child: widget.book.description == null
               ? Text("")
               : Text(
-                  "책 소개 : ${widget.book.description}",
+                  "소개 : ${widget.book.description}",
                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
                 ),
         ),
-
         SizedBox(height: 30),
       ],
     );
   }
 
   // 디테일 페이지 의 선(줄)
-  SizedBox detailPageDivider() {
-    return SizedBox(
-      width: double.infinity,
+  Container detailPageDivider() {
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: 15),
+      width: 100,
       child: Divider(
         // ← AppBar 밑에 선
         thickness: 1, // 선 두께

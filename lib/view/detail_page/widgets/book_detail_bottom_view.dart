@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_project_3/models/book_entity.dart';
+import 'package:intl/intl.dart';
 
 class BookDetailBottomView extends StatefulWidget {
   /// [상품 구매 하단바 위젯]
@@ -22,10 +23,9 @@ class _BookDetailBottomViewState extends State<BookDetailBottomView> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 20),
+    return BottomAppBar(
+      color: Colors.white10,
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           // 개수 카운터
           DetailCounter(
@@ -37,25 +37,32 @@ class _BookDetailBottomViewState extends State<BookDetailBottomView> {
               });
             },
           ),
+          Spacer(),
 
           // 구매 버튼
           GestureDetector(
             onTap: () => purchaseBook(context),
             child: Container(
-              padding: EdgeInsets.symmetric(vertical: 15),
-              width: 60,
-              height: 54,
+              width: 50,
+              height: 50,
               decoration: BoxDecoration(
-                color: Colors.black,
-                borderRadius: BorderRadius.circular(10),
+                color: Colors.lightBlue,
+                borderRadius: BorderRadius.circular(12),
               ),
-              child: Text(
-                "구매",
-                textAlign: TextAlign.center,
-                style: TextStyle(color: Colors.white, fontSize: 16),
+              child: Center(
+                child: Text(
+                  "구매",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
               ),
             ),
           ),
+
+          SizedBox(width: 12),
 
           // 장바구니 버튼
           GestureDetector(
@@ -64,11 +71,11 @@ class _BookDetailBottomViewState extends State<BookDetailBottomView> {
               widget.navigateToCart();
             },
             child: Container(
-              width: 52,
-              height: 54,
+              width: 50,
+              height: 50,
               decoration: BoxDecoration(
                 color: Colors.grey,
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: BorderRadius.circular(12),
               ),
               child: Icon(Icons.shopping_cart, color: Colors.white),
             ),
@@ -148,7 +155,6 @@ class DetailCounter extends StatelessWidget {
     int total = price * count;
     return Row(
       children: [
-        // 수량 빼기 (-)
         IconButton(
           onPressed: () => {
             if (count > 1) {onChanged(count - 1)},
@@ -158,13 +164,10 @@ class DetailCounter extends StatelessWidget {
 
         // 현재 수량
         Container(
-          alignment: Alignment.center,
-          width: 30,
-          height: 36,
-          child: Text(
-            "$count",
-            style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
-          ),
+          width: 40,
+          height: 30,
+          decoration: BoxDecoration(border: Border.all(color: Colors.grey)),
+          child: Center(child: Text("$count", style: TextStyle(fontSize: 15))),
         ),
 
         // 수량 더하기 (+)
@@ -174,10 +177,20 @@ class DetailCounter extends StatelessWidget {
         ),
 
         // 총 가격
-        SizedBox(
-          width: 90,
-          height: 46,
-          child: Text("총 가격: $total 원", style: TextStyle(fontSize: 18)),
+        Container(
+          width: 130,
+          height: 50,
+          padding: EdgeInsets.symmetric(horizontal: 10),
+          decoration: BoxDecoration(
+            border: Border.all(color: Colors.grey),
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Center(
+            child: Text(
+              "${NumberFormat('#,###').format(total)} 원",
+              style: TextStyle(fontSize: 15),
+            ),
+          ),
         ),
       ],
     );
