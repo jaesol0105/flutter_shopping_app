@@ -1,8 +1,12 @@
 // 판매(item) 등록 화면
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_project_3/models/book_entity.dart';
 import 'package:flutter_project_3/view/add_item/widgets/add_item_view.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:path/path.dart' as p;
 
 class AddItemPage extends StatefulWidget {
   const AddItemPage({super.key});
@@ -17,36 +21,41 @@ class _AddItemPageState extends State<AddItemPage> {
   final priceController = TextEditingController();
   final authorController = TextEditingController();
 
-  int pictureCount = 0;
+  static const int maxCount = 10;
   final List<XFile> images = [];
 
-  void vaildcheck(String title, String author, String des, String price) {
-    try {
-      if (title.isEmpty) {
-        showToast(context, '도서명을 입력해 주세요');
-        return;
-      }
-      if (author.isEmpty) {
-        showToast(context, '저자명을 입력해 주세요');
-        return;
-      }
-      if (des.isEmpty) {
-        showToast(context, '설명을 입력해 주세요');
-        return;
-      }
-      if (price.isEmpty) {
-        showToast(context, '가격을 입력해 주세요');
-        return;
-      }
-    } catch (e) {
-      // print(e);
-    }
+  /// [로컬 변수 (images)에 이미지 파일 추가]
+  void addImageToLocal(Iterable<XFile> addList) {
+    final remain = maxCount - images.length;
+    if (remain <= 0) return;
+    setState(() => images.addAll(addList.take(remain)));
   }
 
-  void addImageToLocal(Iterable<XFile> addList) {
-    setState(() {
-      images.addAll(addList);
-    });
+  /// [로컬 변수 (images)에서 이미지 파일 삭제]
+  void removeImageAt(int index) {
+    setState(() => images.removeAt(index));
+  }
+
+  /// [입력 유효성 검사]
+  bool vaildcheck(String title, String author, String des, String price) {
+    if (title.isEmpty) {
+      showToast(context, '도서명을 입력해 주세요');
+      return false;
+    }
+    if (author.isEmpty) {
+      showToast(context, '저자명을 입력해 주세요');
+      return false;
+    }
+    if (des.isEmpty) {
+      showToast(context, '설명을 입력해 주세요');
+      return false;
+    }
+    if (price.isEmpty) {
+      showToast(context, '가격을 입력해 주세요');
+      return false;
+    }
+
+    return true;
   }
 
   @override
@@ -81,7 +90,10 @@ class _AddItemPageState extends State<AddItemPage> {
                 authorController: authorController,
                 desController: desController,
                 priceController: priceController,
+                images: images,
                 addImageToLocal: addImageToLocal,
+                removeImageAt: removeImageAt,
+                maxCount: maxCount,
               ),
             ),
           ),
@@ -96,23 +108,10 @@ class _AddItemPageState extends State<AddItemPage> {
             bottom: 40,
           ),
           child: ElevatedButton(
-            onPressed: () {
-              // 저장 로직
-              String title = titleController.text;
-              String des = desController.text;
-              String author = authorController.text;
-              String price = priceController.text;
+            onPressed: () async {
+              print('✅ 저장 버튼 눌림'); // 이게 콘솔에 찍히는지 확인!
 
-              // 유효성 체크 함수
-              vaildcheck(title, author, des, price);
-
-              BookEntity data = BookEntity(
-                title: titleController.text,
-                author: authorController.text,
-                price: int.parse(priceController.text.replaceAll(',', '')),
-                description: desController.text,
-              );
-              Navigator.pop(context, data);
+              await onSave();
             },
             style: ElevatedButton.styleFrom(
               minimumSize: Size(double.infinity, 54),
@@ -133,6 +132,55 @@ class _AddItemPageState extends State<AddItemPage> {
         ),
       ),
     );
+  }
+
+  Future<Directory> bookImagesDir() async {
+    final base = await getTemporaryDirectory(); // 임시보관
+    final dir = Directory(p.join(base.path, 'book_images'));
+    if (!await dir.exists()) await dir.create(recursive: true);
+    return dir;
+  }
+
+  Future<List<String>> saveXFilesToLocal(List<XFile> files) async {
+    final dir = await bookImagesDir();
+    final List<String> saved = [];
+
+    for (final x in files) {
+      final ext = p.extension(x.path);
+      final fileName =
+          'book_${DateTime.now().millisecondsSinceEpoch}_${saved.length}$ext';
+      final destPath = p.join(dir.path, fileName);
+      // 파일 복사
+      await File(x.path).copy(destPath);
+      saved.add(destPath);
+    }
+    return saved;
+  }
+
+  /// [저장 로직]
+  Future<void> onSave() async {
+    // 유효성 체크
+    final ok = vaildcheck(
+      titleController.text,
+      authorController.text,
+      desController.text,
+      priceController.text,
+    );
+    if (!ok) return;
+
+    // 이미지 로컬 복사
+    final savedPaths = await saveXFilesToLocal(images);
+
+    BookEntity data = BookEntity(
+      title: titleController.text,
+      author: authorController.text,
+      price: int.parse(priceController.text.replaceAll(',', '')),
+      description: desController.text,
+      images: savedPaths,
+    );
+
+    if (!mounted) return;
+    Navigator.pop(context, data);
   }
 }
 

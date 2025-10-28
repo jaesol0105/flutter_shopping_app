@@ -12,23 +12,34 @@ class AddItemView extends StatelessWidget {
     required this.authorController,
     required this.desController,
     required this.priceController,
+    required this.images,
     required this.addImageToLocal,
+    required this.removeImageAt,
+    this.maxCount = 10,
   });
 
   final TextEditingController titleController;
   final TextEditingController authorController;
   final TextEditingController desController;
   final TextEditingController priceController;
+  final List<XFile> images;
   final void Function(Iterable<XFile>) addImageToLocal;
+  final void Function(int) removeImageAt;
+  final int maxCount;
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
         // 사진 등록
-        titleLabel("사진 등록(*/10)"),
+        titleLabel("사진 등록(${images.length}/10)"),
         SizedBox(height: 5),
-        PhotoPickerRowView(addImageToLocal: addImageToLocal),
+        PhotoPickerRowView(
+          images: images,
+          addImageToLocal: addImageToLocal,
+          removeImageAt: removeImageAt,
+          maxCount: maxCount,
+        ),
         SizedBox(height: 30),
 
         // 도서명
