@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_project_3/view/detail_page/book_detail_page.dart';
 import 'package:flutter_project_3/view/home_page/home_page.dart';
 
 void main() {

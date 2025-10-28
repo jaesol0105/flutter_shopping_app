@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 
 class EmptyView extends StatelessWidget {
+  final String text;
+
+  const EmptyView({super.key, required this.text});
+
   @override
   Widget build(BuildContext context) {
     return Center(
       child: Text(
-        '상품이 없습니다.',
+        text,
         style: TextStyle(fontSize: 20, color: Colors.grey[700]),
       ),
     );

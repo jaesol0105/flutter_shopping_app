@@ -26,59 +26,48 @@ class BookView extends StatelessWidget {
         child: InkWell(
           onTap: onNavigateToDetail,
           borderRadius: BorderRadius.circular(12),
-          child: Container(
-            child: Row(
-              children: [
-                Container(
-                  width: 90,
-                  height: 120,
-                  decoration: BoxDecoration(
-                    color: Colors.grey[300],
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: images.isEmpty
-                      ? Center(
-                          child: Text(
-                            'No\nImage',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(fontSize: 16),
-                          ),
-                        )
-                      : ClipRRect(
-                          borderRadius: BorderRadius.circular(12),
-                          child: Image.file(
-                            File(images.first),
-                            fit: BoxFit.cover,
-                          ),
+          child: Row(
+            children: [
+              Container(
+                width: 90,
+                height: 120,
+                decoration: BoxDecoration(
+                  color: Colors.grey[300],
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: images.isEmpty
+                    ? Center(
+                        child: Text(
+                          'No\nImage',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(fontSize: 16),
                         ),
-                ),
-                SizedBox(width: 12),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "도서명 : ${book.title}",
-                      style: TextStyle(
-                        fontSize: 17,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    Text("저자 : ${book.author}", style: TextStyle(fontSize: 14)),
-                    Text(
-                      "소개 : ${book.description}",
-                      style: TextStyle(fontSize: 14),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    SizedBox(height: 12),
-                    Text(
-                      "가격 : ${NumberFormat('#,###').format(book.price)} 원",
-                      style: TextStyle(fontSize: 14),
-                    ),
-                  ],
-                ),
-              ],
-            ),
+                      )
+                    : Image.file(File(images.first), fit: BoxFit.cover),
+              ),
+              SizedBox(width: 12),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "도서명 : ${book.title}",
+                    style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
+                  ),
+                  Text("저자 : ${book.author}", style: TextStyle(fontSize: 14)),
+                  Text(
+                    "소개 : ${book.description}",
+                    style: TextStyle(fontSize: 14),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  SizedBox(height: 12),
+                  Text(
+                    "가격 : ${NumberFormat('#,###').format(book.price)} 원",
+                    style: TextStyle(fontSize: 14),
+                  ),
+                ],
+              ),
+            ],
           ),
         ),
       ),

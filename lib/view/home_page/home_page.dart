@@ -3,8 +3,10 @@ import 'package:flutter_project_3/models/book_entity.dart';
 import 'package:flutter_project_3/view/add_item/add_item_page.dart';
 import 'package:flutter_project_3/view/cart_page/cart_page.dart';
 import 'package:flutter_project_3/view/detail_page/book_detail_page.dart';
+import 'package:flutter_project_3/view/home_page/widgets/book_list_section.dart';
 import 'package:flutter_project_3/view/home_page/widgets/book_list_view.dart';
 import 'package:flutter_project_3/view/home_page/widgets/empty_view.dart';
+import 'package:flutter_project_3/view/home_page/widgets/search_app_bar.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -12,43 +14,64 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  List<BookEntity> bookList = [
-    BookEntity(title: '도서명1', author: '재솔', price: 25000),
-    BookEntity(title: '도서명2', author: '재솔', price: 16000),
-  ]; // 상품(도서) 데이터
-
+  List<BookEntity> bookList = []; // 상품(도서) 데이터
   List<CartItem> cartList = []; // 장바구니 데이터
+
+  bool isSearching = false; // 검색 중?
+  String query = ''; // 검색 쿼리
+  final TextEditingController _searchController = TextEditingController();
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('REBook'),
-        centerTitle: true,
-        actions: [
-          IconButton(icon: Icon(Icons.search), onPressed: () {}),
-          IconButton(
-            icon: Icon(Icons.shopping_cart),
-            onPressed: () => navigateToCart(),
-          ),
-        ],
-      ),
+    final showingBooks = _filteredBooks;
+    final mappedIndexes = _filteredIndexes;
 
-      // 상품 목록
-      body: bookList.isEmpty
-          ? EmptyView()
-          : BookListView(
-              key: UniqueKey(),
-              bookList: bookList,
-              onNavigateToDetail: navigateToDetail,
-            ),
+    return PopScope(
+      canPop: !isSearching, // 검색 중일 땐 pop 방지
+      onPopInvokedWithResult: (didPop, result) {
+        // 검색중 pop 한 경우 검색 창 닫기
+        if (!didPop && isSearching) {
+          setState(() {
+            isSearching = false;
+            query = '';
+            _searchController.clear();
+          });
+        }
+      },
+      child: Scaffold(
+        appBar: SearchAppBar(
+          isSearching: isSearching,
+          searchController: _searchController,
+          onQueryChanged: (v) => setState(() => query = v),
+          onStartSearch: _startSearch,
+          onEndSearch: _endSearch,
+          onCartPressed: navigateToCart,
+        ),
 
-      // 상품 추가
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => navigateToAddItem(),
-        shape: const CircleBorder(),
-        backgroundColor: Colors.blue,
-        child: const Icon(Icons.add, size: 35, color: Colors.white),
+        // 상품 목록
+        body: showingBooks.isEmpty
+            ? (bookList.isEmpty
+                  ? const EmptyView(text: '상품이 없습니다.')
+                  : const EmptyView(text: '검색 결과가 없습니다.'))
+            : BookListSection(
+                bookList: showingBooks,
+                onNavigateToDetail: (filteredIndex) =>
+                    navigateToDetail(mappedIndexes[filteredIndex]),
+              ),
+
+        // 상품 추가
+        floatingActionButton: FloatingActionButton(
+          onPressed: () => navigateToAddItem(),
+          shape: const CircleBorder(),
+          backgroundColor: Colors.blue,
+          child: const Icon(Icons.add, size: 35, color: Colors.white),
+        ),
       ),
     );
   }
@@ -115,6 +138,34 @@ class _HomePageState extends State<HomePage> {
   void editBookCountInCart(int index, int count) {
     setState(() {
       cartList[index].count = count;
+    });
+  }
+
+  /// [검색 필터링 : 인덱스 배열 반환]
+  List<int> get _filteredIndexes {
+    // 검색중이 아닐 경우 또는 검색창에 아무것도 안친 상태
+    if (!isSearching || query.trim().isEmpty) {
+      return List<int>.generate(bookList.length, (i) => i); // 전체 index 배열 반환
+    }
+    final q = query.toLowerCase();
+    return List<int>.generate(bookList.length, (i) => i)
+        .where((i) => bookList[i].title.toLowerCase().contains(q))
+        .toList(); // 필터링 걸리는 index 배열 반환
+  }
+
+  /// [인덱스로 bookList 매핑]
+  List<BookEntity> get _filteredBooks =>
+      _filteredIndexes.map((i) => bookList[i]).toList();
+
+  /// [검색 시작]
+  void _startSearch() => setState(() => isSearching = true);
+
+  /// [검색 종료]
+  void _endSearch() {
+    setState(() {
+      isSearching = false;
+      query = '';
+      _searchController.clear();
     });
   }
 }
