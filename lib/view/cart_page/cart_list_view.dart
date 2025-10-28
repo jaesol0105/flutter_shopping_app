@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_project_3/models/book_entity.dart';
-import 'package:flutter_project_3/view/cart_page/cart_page.dart';
 import 'dart:io';
-
-import 'package:intl/intl.dart';
 
 class CartListView extends StatelessWidget {
   final List<CartItem> cartItems;
@@ -30,6 +27,72 @@ class CartListView extends StatelessWidget {
       total += item.book.price * item.count;
     }
     return total;
+  }
+
+  // 구매하기 팝업
+  void buyItemPopup(BuildContext context) {
+    // 선택된 상품이 없는 경우
+    if (selectedItems.isEmpty) {
+      noItemsSelectedToast(context);
+      return;
+    }
+    showBuyDialog(context);
+  }
+
+  // 구매할 상품을 선택해주세요 토스트
+  void noItemsSelectedToast(BuildContext context) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('구매할 상품을 선택해주세요.'),
+        duration: Duration(seconds: 2),
+        behavior: SnackBarBehavior.floating,
+      ),
+    );
+  }
+
+  // 구매하기 팝업
+  void showBuyDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Center(child: Text('구매하기')),
+          content: Text('상품을 구매하시겠습니까?', textAlign: TextAlign.center),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text('취소'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                _showCompleteDialog(context);
+              },
+              child: Text('확인'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  // 구매 완료 팝업
+  void _showCompleteDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Center(child: Text('구매 완료')),
+          content: Text('구매가 완료되었습니다.', textAlign: TextAlign.center),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text('확인'),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -135,11 +198,9 @@ class CartListView extends StatelessWidget {
               ),
               // 결제 버튼
               TextButton(
-                onPressed: selectedItems.isNotEmpty
-                    ? () {
-                        // 기능 미구현
-                      }
-                    : null,
+                onPressed: () {
+                  buyItemPopup(context);
+                },
                 style: TextButton.styleFrom(
                   backgroundColor: selectedItems.isNotEmpty
                       ? Colors.grey[600]
