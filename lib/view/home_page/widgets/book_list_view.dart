@@ -3,7 +3,7 @@ import 'package:flutter_project_3/models/book_entity.dart';
 import 'package:flutter_project_3/view/home_page/widgets/book_view.dart';
 
 class BookListView extends StatelessWidget {
-  /// [상품 목록 출력 위젯]
+  /// [상품 리스트 뷰 위젯]
   const BookListView({
     super.key,
     required this.bookList,

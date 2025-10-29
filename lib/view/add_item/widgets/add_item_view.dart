@@ -6,7 +6,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 
 class AddItemView extends StatelessWidget {
-  /// [상품 정보 입력 위젯]
+  /// [상품 정보 입력 뷰]
   const AddItemView({
     super.key,
     required this.titleController,
@@ -14,8 +14,8 @@ class AddItemView extends StatelessWidget {
     required this.desController,
     required this.priceController,
     required this.images,
-    required this.addImageToLocal,
-    required this.removeImageAt,
+    required this.onAddImageToLocal,
+    required this.onRemoveImageAt,
     this.maxCount = 10,
   });
 
@@ -24,26 +24,26 @@ class AddItemView extends StatelessWidget {
   final TextEditingController desController;
   final TextEditingController priceController;
   final List<XFile> images;
-  final void Function(Iterable<XFile>) addImageToLocal;
-  final void Function(int) removeImageAt;
+  final void Function(Iterable<XFile>) onAddImageToLocal;
+  final void Function(int) onRemoveImageAt;
   final int maxCount;
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        // 사진 등록
+        // ## 사진 등록
         titleLabel("사진 등록(${images.length}/10)"),
         SizedBox(height: 5),
         PhotoPickerRowView(
           images: images,
-          addImageToLocal: addImageToLocal,
-          removeImageAt: removeImageAt,
+          onAddImageToLocal: onAddImageToLocal,
+          onRemoveImageAt: onRemoveImageAt,
           maxCount: maxCount,
         ),
         SizedBox(height: 30),
 
-        // 도서명
+        // ## 도서명
         titleLabel("도서명"),
         SizedBox(height: 5),
         TextField(
@@ -54,7 +54,7 @@ class AddItemView extends StatelessWidget {
         ),
         SizedBox(height: 30),
 
-        // 저자명
+        // ## 저자명
         titleLabel("저자명"),
         SizedBox(height: 5),
         TextField(
@@ -65,7 +65,7 @@ class AddItemView extends StatelessWidget {
         ),
         SizedBox(height: 30),
 
-        // 설명
+        // ## 설명
         titleLabel("설명"),
         SizedBox(height: 5),
         TextField(
@@ -78,7 +78,7 @@ class AddItemView extends StatelessWidget {
         ),
         SizedBox(height: 30),
 
-        // 가격
+        // ## 가격
         titleLabel("가격"),
         SizedBox(height: 5),
         Stack(
@@ -123,7 +123,6 @@ class AddItemView extends StatelessWidget {
   InputDecoration styleInputDecoration() {
     return InputDecoration(
       counterText: '',
-      // contentPadding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10),
       // ## 포커스가 없을 때 (기본) 테두리 색상
       enabledBorder: OutlineInputBorder(
         borderSide: BorderSide(color: Colors.grey, width: 3),

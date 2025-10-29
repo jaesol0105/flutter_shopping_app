@@ -8,13 +8,14 @@ class BookDetailPage extends StatefulWidget {
     super.key,
     required this.book,
     required this.index,
-    required this.addBookToCartList,
-    required this.navigateToCart,
+    required this.onAddBookToCartList,
+    required this.onNavigateToCart,
   });
+
   final BookEntity book;
   final int index;
-  final void Function(BookEntity, int) addBookToCartList;
-  final VoidCallback navigateToCart;
+  final void Function(BookEntity, int) onAddBookToCartList;
+  final VoidCallback onNavigateToCart;
 
   @override
   State<BookDetailPage> createState() => _BookDetailPageState();
@@ -26,14 +27,14 @@ class _BookDetailPageState extends State<BookDetailPage> {
     return Scaffold(
       appBar: AppBar(title: Text("상세 페이지")),
 
-      // 상품의 상세 내용
+      // 상품의 상세 내용 뷰
       body: BookDetailView(book: widget.book),
 
       // 하단 버튼
       bottomNavigationBar: BookDetailBottomView(
         book: widget.book,
-        addBookToCartList: widget.addBookToCartList,
-        navigateToCart: widget.navigateToCart,
+        onAddBookToCartList: widget.onAddBookToCartList,
+        onNavigateToCart: widget.onNavigateToCart,
       ),
     );
   }

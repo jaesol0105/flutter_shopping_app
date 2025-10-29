@@ -4,22 +4,22 @@ import 'package:flutter_project_3/models/book_entity.dart';
 import 'dart:io';
 
 class CartListView extends StatelessWidget {
-  final List<CartItem> cartItems;
-  final Set<int> selectedItems;
-  final Function(int) onRemove;
-  final Function(int, int) onUpdateCount;
-  final Function(int, bool) onItemCheck;
-
   const CartListView({
     super.key,
     required this.cartItems,
     required this.selectedItems,
-    required this.onRemove,
+    required this.onRemoveItem,
     required this.onUpdateCount,
     required this.onItemCheck,
   });
 
-  // 선택한 아이템 가격
+  final List<CartItem> cartItems;
+  final Set<int> selectedItems;
+  final Function(int) onRemoveItem;
+  final Function(int, int) onUpdateCount;
+  final Function(int, bool) onItemCheck;
+
+  // [선택한 상품의 총 가격 계산]
   int selectedItemsPrice() {
     int total = 0;
     for (final index in selectedItems) {
@@ -29,8 +29,8 @@ class CartListView extends StatelessWidget {
     return total;
   }
 
-  // 구매하기 팝업
-  void buyItemPopup(BuildContext context) {
+  // [선택한 상품들 구매하기]
+  void buyItems(BuildContext context) {
     // 선택된 상품이 없는 경우
     if (selectedItems.isEmpty) {
       noItemsSelectedToast(context);
@@ -39,7 +39,7 @@ class CartListView extends StatelessWidget {
     showBuyDialog(context);
   }
 
-  // 구매할 상품을 선택해주세요 토스트
+  // [구매할 상품을 선택해주세요 토스트]
   void noItemsSelectedToast(BuildContext context) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -50,7 +50,7 @@ class CartListView extends StatelessWidget {
     );
   }
 
-  // 구매하기 팝업
+  // [구매하기 팝업]
   void showBuyDialog(BuildContext context) {
     showDialog(
       context: context,
@@ -76,7 +76,7 @@ class CartListView extends StatelessWidget {
     );
   }
 
-  // 구매 완료 팝업
+  // [구매 완료 팝업]
   void _showCompleteDialog(BuildContext context) {
     showDialog(
       context: context,
@@ -118,7 +118,8 @@ class CartListView extends StatelessWidget {
                         onTap: (bool? value) =>
                             onItemCheck(index, value ?? false),
                       ),
-                      // 책 이미지
+
+                      // 상품 이미지
                       Container(
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(12),
@@ -143,8 +144,9 @@ class CartListView extends StatelessWidget {
                                 ),
                               ),
                       ),
-
                       SizedBox(width: 12),
+
+                      // 상품 정보
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -173,7 +175,7 @@ class CartListView extends StatelessWidget {
                         ),
                       ),
                       // 삭제 버튼
-                      DeleteCartButton(index: index, onRemove: onRemove),
+                      DeleteCartButton(index: index, onRemove: onRemoveItem),
                     ],
                   ),
                 ),
@@ -182,6 +184,7 @@ class CartListView extends StatelessWidget {
           ),
         ),
 
+        // 하단 결제 바
         Container(
           margin: EdgeInsets.only(bottom: 16),
           padding: EdgeInsets.all(16),
@@ -192,14 +195,16 @@ class CartListView extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
+              // 결제 금액
               Text(
                 '결제 금액 : ${NumberFormat('#,###').format(selectedItemsPrice())}원',
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
               ),
+
               // 결제 버튼
               TextButton(
                 onPressed: () {
-                  buyItemPopup(context);
+                  buyItems(context);
                 },
                 style: TextButton.styleFrom(
                   backgroundColor: selectedItems.isNotEmpty
@@ -221,6 +226,7 @@ class CartListView extends StatelessWidget {
 }
 
 class DeleteCartButton extends StatelessWidget {
+  /// [장바구니에서 제외 버튼 위젯]
   const DeleteCartButton({
     super.key,
     required this.index,
@@ -237,6 +243,7 @@ class DeleteCartButton extends StatelessWidget {
         showDialog(
           context: context,
           builder: (BuildContext context) {
+            // 경고 대화상자 출력
             return AlertDialog(
               title: Center(child: Text('진짜 안 사?')),
               content: Text('진짜 진짜 진짜 진짜 진짜 진짜 진짜 진짜 안 사?'),
@@ -263,6 +270,7 @@ class DeleteCartButton extends StatelessWidget {
 }
 
 class CountButton extends StatelessWidget {
+  /// [상품 수량 버튼 위젯]
   const CountButton({
     super.key,
     required this.index,
@@ -303,10 +311,11 @@ class CountButton extends StatelessWidget {
 }
 
 class CheckButton extends StatelessWidget {
+  /// [구매할 상품 체크 토글 위젯]
+  const CheckButton({super.key, required this.isChecked, required this.onTap});
+
   final bool isChecked;
   final Function(bool?) onTap;
-
-  const CheckButton({super.key, required this.isChecked, required this.onTap});
 
   @override
   Widget build(BuildContext context) {

@@ -2,10 +2,10 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_project_3/models/book_entity.dart';
-import 'package:flutter_project_3/util/util.dart';
+import 'package:flutter_project_3/utils/utils.dart';
 
 class BookDetailView extends StatefulWidget {
-  /// [상품 디테일 내용 위젯]
+  /// [상품의 상세 내용 뷰]
   const BookDetailView({super.key, required this.book});
   final BookEntity book;
 
@@ -14,7 +14,7 @@ class BookDetailView extends StatefulWidget {
 }
 
 class _BookDetailViewState extends State<BookDetailView> {
-  int currentIndex = 0; // 현재 보고 있는 이미지 인덱스
+  int currentIndex = 0; // PageView : 현재 보고 있는 이미지 인덱스
 
   @override
   Widget build(BuildContext context) {

@@ -1,18 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_project_3/models/book_entity.dart';
-import 'package:intl/intl.dart';
+import 'package:flutter_project_3/view/detail_page/widgets/book_detail_counter_view.dart';
 
 class BookDetailBottomView extends StatefulWidget {
-  /// [상품 구매 하단바 위젯]
+  /// [상품 구매 하단바 위젯 (구매/장바구니담기)]
   const BookDetailBottomView({
     super.key,
     required this.book,
-    required this.addBookToCartList,
-    required this.navigateToCart,
+    required this.onAddBookToCartList,
+    required this.onNavigateToCart,
   });
+
   final BookEntity book;
-  final void Function(BookEntity, int) addBookToCartList;
-  final VoidCallback navigateToCart;
+  final void Function(BookEntity, int) onAddBookToCartList;
+  final VoidCallback onNavigateToCart;
 
   @override
   State<BookDetailBottomView> createState() => _BookDetailBottomViewState();
@@ -29,7 +30,7 @@ class _BookDetailBottomViewState extends State<BookDetailBottomView> {
         child: Row(
           children: [
             // 개수 카운터
-            DetailCounter(
+            BookDetailCounter(
               price: widget.book.price,
               count: count,
               onChanged: (changedCount) {
@@ -67,8 +68,8 @@ class _BookDetailBottomViewState extends State<BookDetailBottomView> {
             // 장바구니 버튼
             GestureDetector(
               onTap: () {
-                widget.addBookToCartList(widget.book, count);
-                widget.navigateToCart();
+                widget.onAddBookToCartList(widget.book, count);
+                widget.onNavigateToCart();
               },
               child: Container(
                 width: 50,
@@ -86,7 +87,7 @@ class _BookDetailBottomViewState extends State<BookDetailBottomView> {
     );
   }
 
-  /// [상품 구매 대화상자 출력 및 완료 처리]
+  /// [상품 구매 다이얼로그 출력 및 완료 처리]
   void purchaseBook(BuildContext context) {
     _showPurchaseConfirmDialog(context);
   }
@@ -136,66 +137,6 @@ class _BookDetailBottomViewState extends State<BookDetailBottomView> {
           ],
         );
       },
-    );
-  }
-}
-
-class DetailCounter extends StatelessWidget {
-  /// [상품 개수 카운터 위젯]
-  const DetailCounter({
-    super.key,
-    required this.price,
-    required this.count,
-    required this.onChanged,
-  });
-
-  final int price;
-  final int count;
-  final void Function(int) onChanged;
-
-  @override
-  Widget build(BuildContext context) {
-    int total = price * count;
-    return Row(
-      children: [
-        IconButton(
-          onPressed: () => {
-            if (count > 1) {onChanged(count - 1)},
-          },
-          icon: const Icon(Icons.remove),
-        ),
-
-        // 현재 수량
-        Container(
-          width: 40,
-          height: 30,
-          decoration: BoxDecoration(border: Border.all(color: Colors.grey)),
-          child: Center(child: Text("$count", style: TextStyle(fontSize: 15))),
-        ),
-
-        // 수량 더하기 (+)
-        IconButton(
-          onPressed: () => {onChanged(count + 1)},
-          icon: const Icon(Icons.add),
-        ),
-
-        // 총 가격
-        Container(
-          width: 130,
-          height: 50,
-          padding: EdgeInsets.symmetric(horizontal: 10),
-          decoration: BoxDecoration(
-            border: Border.all(color: Colors.grey),
-            borderRadius: BorderRadius.circular(12),
-          ),
-          child: Center(
-            child: Text(
-              "${NumberFormat('#,###').format(total)} 원",
-              style: TextStyle(fontSize: 15),
-            ),
-          ),
-        ),
-      ],
     );
   }
 }
