@@ -107,9 +107,9 @@ class _HomePageState extends State<HomePage> {
       context,
       MaterialPageRoute(
         builder: (context) => CartPage(
-          cartItemList: cartList,
-          removeBookToCartList: removeBookToCartList,
-          editBookCountInCart: editBookCountInCart,
+          cartList: cartList,
+          onRemoveBookToCartList: removeBookToCartList,
+          onEditBookCountInCartList: editBookCountInCartList,
         ),
       ),
     );
@@ -135,7 +135,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   // [장바구니에 담긴 상품 수량 변경]
-  void editBookCountInCart(int index, int count) {
+  void editBookCountInCartList(int index, int count) {
     setState(() {
       cartList[index].count = count;
     });
