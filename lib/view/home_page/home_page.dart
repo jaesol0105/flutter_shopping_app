@@ -85,8 +85,8 @@ class _HomePageState extends State<HomePage> {
           key: UniqueKey(),
           book: bookList[index],
           index: index,
-          addBookToCartList: addBookToCartList,
-          navigateToCart: navigateToCart,
+          onAddBookToCartList: addBookToCartList,
+          onNavigateToCart: navigateToCart,
         ),
       ),
     );
