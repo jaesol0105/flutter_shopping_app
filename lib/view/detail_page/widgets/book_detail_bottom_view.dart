@@ -26,23 +26,24 @@ class _BookDetailBottomViewState extends State<BookDetailBottomView> {
   Widget build(BuildContext context) {
     return BottomAppBar(
       color: Colors.white10,
-      child: Expanded(
-        child: Row(
-          children: [
-            // 개수 카운터
-            BookDetailCounter(
-              price: widget.book.price,
-              count: count,
-              onChanged: (changedCount) {
-                setState(() {
-                  count = changedCount;
-                });
-              },
-            ),
-            Spacer(),
-            // 구매 버튼
-            GestureDetector(
-              onTap: () => purchaseBook(context),
+      child: Row(
+        children: [
+          // 개수 카운터
+          BookDetailCounter(
+            price: widget.book.price,
+            count: count,
+            onChanged: (changedCount) {
+              setState(() {
+                count = changedCount;
+              });
+            },
+          ),
+          Spacer(),
+
+          // 구매 버튼
+          GestureDetector(
+            onTap: () => purchaseBook(context),
+            child: Expanded(
               child: Container(
                 width: 50,
                 height: 50,
@@ -62,15 +63,17 @@ class _BookDetailBottomViewState extends State<BookDetailBottomView> {
                 ),
               ),
             ),
+          ),
 
-            SizedBox(width: 12),
+          SizedBox(width: 6),
 
-            // 장바구니 버튼
-            GestureDetector(
-              onTap: () {
-                widget.onAddBookToCartList(widget.book, count);
-                widget.onNavigateToCart();
-              },
+          // 장바구니 버튼
+          GestureDetector(
+            onTap: () {
+              widget.onAddBookToCartList(widget.book, count);
+              widget.onNavigateToCart();
+            },
+            child: Expanded(
               child: Container(
                 width: 50,
                 height: 50,
@@ -81,8 +84,8 @@ class _BookDetailBottomViewState extends State<BookDetailBottomView> {
                 child: Icon(Icons.shopping_cart, color: Colors.white),
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

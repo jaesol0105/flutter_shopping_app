@@ -102,7 +102,7 @@ class AddItemView extends StatelessWidget {
                 children: [
                   Spacer(),
                   Text(
-                    "${NumberFormat('#,###').format(int.tryParse(priceController.text.replaceAll(',', '')) ?? 0)} 원",
+                    "원",
                     style: TextStyle(
                       color: Colors.grey,
                       fontWeight: FontWeight.bold,

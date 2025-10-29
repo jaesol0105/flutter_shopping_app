@@ -42,9 +42,8 @@ class BookDetailCounter extends StatelessWidget {
 
         // 총 가격
         Container(
-          width: 130,
           height: 50,
-          padding: EdgeInsets.symmetric(horizontal: 10),
+          padding: EdgeInsets.symmetric(horizontal: 20),
           decoration: BoxDecoration(
             border: Border.all(color: Colors.grey),
             borderRadius: BorderRadius.circular(12),

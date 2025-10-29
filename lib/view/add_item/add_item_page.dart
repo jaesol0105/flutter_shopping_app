@@ -98,7 +98,17 @@ class _AddItemPageState extends State<AddItemPage> {
   }
 
   /// [입력 유효성 검사]
-  bool vaildcheck(String title, String author, String des, String price) {
+  bool vaildcheck(
+    List<XFile> images,
+    String title,
+    String author,
+    String des,
+    String price,
+  ) {
+    if (images.isEmpty) {
+      showToast(context, '이미지를 등록해 주세요');
+      return false;
+    }
     if (title.isEmpty) {
       showToast(context, '도서명을 입력해 주세요');
       return false;
@@ -143,11 +153,13 @@ class _AddItemPageState extends State<AddItemPage> {
   Future<void> onSave() async {
     // ## 유효성 체크
     final ok = vaildcheck(
+      images,
       titleController.text,
       authorController.text,
       desController.text,
       priceController.text,
     );
+
     if (!ok) return;
 
     // ## 이미지 로컬 복사
