@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_project_3/models/book_entity.dart';
-import 'package:flutter_project_3/util/util.dart';
+import 'package:flutter_project_3/utils/utils.dart';
 
 class BookDetailView extends StatefulWidget {
   /// [상품의 상세 내용 뷰]

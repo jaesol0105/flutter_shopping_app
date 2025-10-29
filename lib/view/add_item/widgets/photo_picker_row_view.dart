@@ -3,17 +3,18 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
 class PhotoPickerRowView extends StatelessWidget {
+  /// [이미지 추가 수평 스크롤 위젯]
   const PhotoPickerRowView({
     super.key,
     required this.images,
-    required this.addImageToLocal,
-    required this.removeImageAt,
+    required this.onAddImageToLocal,
+    required this.onRemoveImageAt,
     this.maxCount = 10,
   });
 
   final List<XFile> images;
-  final void Function(Iterable<XFile>) addImageToLocal;
-  final void Function(int) removeImageAt;
+  final void Function(Iterable<XFile>) onAddImageToLocal;
+  final void Function(int) onRemoveImageAt;
   final int maxCount;
 
   /// [업로드할 이미지 선택]
@@ -34,7 +35,7 @@ class PhotoPickerRowView extends StatelessWidget {
       (remain 동작안할 경우를 대비해서 수동으로 예외처리) */
     final addList = picked.take(remain);
 
-    addImageToLocal(addList);
+    onAddImageToLocal(addList);
   }
 
   @override
@@ -50,14 +51,14 @@ class PhotoPickerRowView extends StatelessWidget {
         separatorBuilder: (BuildContext context, int index) =>
             const SizedBox(width: 8),
         itemBuilder: (context, index) {
-          // 첫번째 인덱스 (이미지 불러오기)
+          // 첫번째 인덱스 (이미지 불러오기 버튼)
           if (index == 0) {
             return _AddPhoto(onTap: pickPhoto, ableToAdd: ableToAdd);
           }
 
           final img = images[index - 1];
 
-          // 나머지 인덱스
+          // 나머지 인덱스 (image_picker에서 고른 사진들)
           return ClipRRect(
             borderRadius: BorderRadius.circular(8),
             child: Stack(
@@ -68,12 +69,13 @@ class PhotoPickerRowView extends StatelessWidget {
                   height: 60,
                   child: Image.file(File(img.path), fit: BoxFit.cover),
                 ),
+
                 // 삭제 버튼
                 Positioned(
                   top: 4,
                   right: 4,
                   child: InkWell(
-                    onTap: () => removeImageAt(index - 1),
+                    onTap: () => onRemoveImageAt(index - 1),
                     child: Container(
                       decoration: BoxDecoration(
                         color: Colors.black54,
