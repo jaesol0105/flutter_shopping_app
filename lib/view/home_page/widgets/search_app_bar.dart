@@ -1,13 +1,7 @@
 import 'package:flutter/material.dart';
 
 class SearchAppBar extends StatelessWidget implements PreferredSizeWidget {
-  final bool isSearching;
-  final TextEditingController searchController;
-  final ValueChanged<String> onQueryChanged;
-  final VoidCallback onStartSearch;
-  final VoidCallback onEndSearch;
-  final VoidCallback onCartPressed;
-
+  /// [검색 기능이 포함된 커스텀 앱 바]
   const SearchAppBar({
     super.key,
     required this.isSearching,
@@ -18,6 +12,13 @@ class SearchAppBar extends StatelessWidget implements PreferredSizeWidget {
     required this.onCartPressed,
   });
 
+  final bool isSearching;
+  final TextEditingController searchController;
+  final ValueChanged<String> onQueryChanged;
+  final VoidCallback onStartSearch;
+  final VoidCallback onEndSearch;
+  final VoidCallback onCartPressed;
+
   @override
   Size get preferredSize => const Size.fromHeight(kToolbarHeight);
 
@@ -27,6 +28,7 @@ class SearchAppBar extends StatelessWidget implements PreferredSizeWidget {
       backgroundColor: Colors.blue,
       centerTitle: true,
       title: isSearching
+          // 검색 중일 때
           ? TextField(
               controller: searchController,
               autofocus: true,
@@ -38,6 +40,7 @@ class SearchAppBar extends StatelessWidget implements PreferredSizeWidget {
               cursorColor: Colors.white,
               onChanged: onQueryChanged,
             )
+          // 기본 상태일 때
           : const Text(
               'REBook',
               style: TextStyle(
@@ -46,12 +49,16 @@ class SearchAppBar extends StatelessWidget implements PreferredSizeWidget {
                 fontWeight: FontWeight.bold,
               ),
             ),
+
+      // 검색 중일 때 백버튼
       leading: isSearching
           ? IconButton(
               icon: const Icon(Icons.arrow_back, color: Colors.white),
               onPressed: onEndSearch,
             )
           : null,
+
+      // 상단 메뉴 버튼
       actions: [
         if (!isSearching)
           IconButton(

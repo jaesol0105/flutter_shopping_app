@@ -46,6 +46,7 @@ class BookView extends StatelessWidget {
                     : Image.file(File(images.first), fit: BoxFit.cover),
               ),
               SizedBox(width: 12),
+
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
